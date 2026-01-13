@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bgd-app
+  # [중요 1] Application 리소스는 ArgoCD 서버가 있는 곳에 만들어야 합니다.
+  # 오퍼레이터가 있는 'openshift-gitops-operator'가 아니라,
+  # 실제 ArgoCD 인스턴스가 실행 중인 'openshift-gitops'여야 합니다.
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: bgd
+    # [설명] ArgoCD가 설치된 '현재 클러스터'를 의미하므로 변경하지 마세요!
+    # OpenShift 내부 통신용 주소로, 가장 빠르고 안전합니다.
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    ## 다음 실습을 위해 여긴 내가 fork 해 온 저장소로 변경하자 
+    repoURL: https://github.com/KimJeongHoon190/gitops-cookbook-sc.git
+    path: ch07/bgd
+    targetRevision: main
+  # [추천 설정] 이 부분이 없으면 배포 대상 네임스페이스(bgd)가 없을 때 에러가 납니다.
+  # 자동으로 네임스페이스를 생성해주는 옵션을 추가했습니다.
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated: 
+      selfHeal: true
+      prune: true
