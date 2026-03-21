@@ -24,4 +24,4 @@ spec:
         - name: COLOR
           value: "blue"
         resources: {}
----
+---# Triggering PR for GitOps
